@@ -91,8 +91,8 @@ const Index = () => {
     const existingRecord = breakRecords.find(record => record.name === associateName && !record.end);
 
     if (existingRecord) {
-      // End break
-      const startTime = new Date(existingRecord.start);
+      // End break - use the stored startTime Date object for calculation
+      const startTime = existingRecord.startTime || new Date();
       const duration = formatDuration(now.getTime() - startTime.getTime());
       
       setBreakRecords(prev => 

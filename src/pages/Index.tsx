@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -75,6 +74,16 @@ const Index = () => {
   const recordTime = () => {
     if (!associateName.trim()) {
       toast.error('Please enter an associate name');
+      return;
+    }
+
+    // Count how many times this associate name has been used
+    const nameCount = breakRecords.filter(record => record.name === associateName).length;
+    
+    // Check if this would be the third entry for this name
+    if (nameCount >= 2) {
+      toast.error(`${associateName} has already been used twice. Cannot add a third entry.`);
+      setAssociateName('');
       return;
     }
 

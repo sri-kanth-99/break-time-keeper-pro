@@ -25,7 +25,7 @@ interface ActiveBreak {
 
 const Index = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [workerName, setWorkerName] = useState('');
+  const [associateName, setAssociateName] = useState('');
   const [breakRecords, setBreakRecords] = useState<BreakRecord[]>([]);
   const [activeBreaks, setActiveBreaks] = useState<{ [key: string]: ActiveBreak }>({});
 
@@ -73,13 +73,13 @@ const Index = () => {
   };
 
   const recordTime = () => {
-    if (!workerName.trim()) {
-      toast.error('Please enter a worker name');
+    if (!associateName.trim()) {
+      toast.error('Please enter an associate name');
       return;
     }
 
     const now = new Date();
-    const existingRecord = breakRecords.find(record => record.name === workerName && !record.end);
+    const existingRecord = breakRecords.find(record => record.name === associateName && !record.end);
 
     if (existingRecord) {
       // End break
@@ -88,7 +88,7 @@ const Index = () => {
       
       setBreakRecords(prev => 
         prev.map(record => 
-          record.name === workerName && !record.end
+          record.name === associateName && !record.end
             ? { ...record, end: formatTime(now), duration, endTime: now }
             : record
         )
@@ -96,26 +96,26 @@ const Index = () => {
 
       setActiveBreaks(prev => {
         const updated = { ...prev };
-        delete updated[workerName];
+        delete updated[associateName];
         return updated;
       });
 
       const minutes = parseInt(duration.split('m')[0]);
       if (minutes > 32) {
-        toast.error(`${workerName}'s break exceeded 32 minutes!`, {
+        toast.error(`${associateName}'s break exceeded 32 minutes!`, {
           duration: 5000,
         });
       } else if (minutes > 30) {
-        toast.warning(`${workerName}'s break exceeded 30 minutes`, {
+        toast.warning(`${associateName}'s break exceeded 30 minutes`, {
           duration: 3000,
         });
       } else {
-        toast.success(`Break ended for ${workerName}`);
+        toast.success(`Break ended for ${associateName}`);
       }
     } else {
       // Start break
       const newRecord: BreakRecord = {
-        name: workerName,
+        name: associateName,
         start: formatTime(now),
         end: '',
         duration: '',
@@ -124,11 +124,11 @@ const Index = () => {
       };
 
       setBreakRecords(prev => [...prev, newRecord]);
-      setActiveBreaks(prev => ({ ...prev, [workerName]: { start: now } }));
-      toast.success(`Break started for ${workerName}`);
+      setActiveBreaks(prev => ({ ...prev, [associateName]: { start: now } }));
+      toast.success(`Break started for ${associateName}`);
     }
 
-    setWorkerName('');
+    setAssociateName('');
   };
 
   const updateReason = (index: number, reason: string) => {
@@ -143,7 +143,7 @@ const Index = () => {
         `${record.name}\t${record.start}\t${record.end}\t${record.duration}\t${record.reason}`
       ).join('\n');
       
-      const header = 'Worker Name\tBreak Start\tBreak End\tBreak Duration\tReason\n';
+      const header = 'Associate Name\tBreak Start\tBreak End\tBreak Duration\tReason\n';
       await navigator.clipboard.writeText(header + tableText);
       toast.success('Table copied to clipboard!');
     } catch (error) {
@@ -153,7 +153,7 @@ const Index = () => {
 
   const downloadExcel = () => {
     const data = [
-      ['Worker Name', 'Break Start', 'Break End', 'Break Duration', 'Reason'],
+      ['Associate Name', 'Break Start', 'Break End', 'Break Duration', 'Reason'],
       ...breakRecords.map(record => [record.name, record.start, record.end, record.duration, record.reason])
     ];
 
@@ -210,22 +210,22 @@ const Index = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-slate-700">
               <Users className="h-5 w-5" />
-              Worker Management
+              Associate Break Time Tracking
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <Input
                 type="text"
-                placeholder="Enter worker name"
-                value={workerName}
-                onChange={(e) => setWorkerName(e.target.value)}
+                placeholder="Enter associate name"
+                value={associateName}
+                onChange={(e) => setAssociateName(e.target.value)}
                 onKeyDown={handleKeyPress}
                 className="max-w-xs"
               />
               <div className="flex gap-2 flex-wrap justify-center">
                 <Button onClick={recordTime} className="bg-blue-600 hover:bg-blue-700">
-                  {workerName && breakRecords.find(r => r.name === workerName && !r.end) ? 'End Break' : 'Start Break'}
+                  {associateName && breakRecords.find(r => r.name === associateName && !r.end) ? 'End Break' : 'Start Break'}
                 </Button>
                 <Button onClick={copyTable} variant="outline" className="flex items-center gap-2">
                   <Copy className="h-4 w-4" />
@@ -254,7 +254,7 @@ const Index = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-blue-50">
-                    <TableHead className="font-semibold text-slate-700">Worker Name</TableHead>
+                    <TableHead className="font-semibold text-slate-700">Associate Name</TableHead>
                     <TableHead className="font-semibold text-slate-700">Break Start</TableHead>
                     <TableHead className="font-semibold text-slate-700">Break End</TableHead>
                     <TableHead className="font-semibold text-slate-700">Duration</TableHead>
@@ -265,7 +265,7 @@ const Index = () => {
                   {breakRecords.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center text-slate-500 py-8">
-                        No break records yet. Start tracking breaks by entering a worker name above.
+                        No break records yet. Start tracking breaks by entering an associate name above.
                       </TableCell>
                     </TableRow>
                   ) : (

@@ -77,22 +77,21 @@ const Index = () => {
       return;
     }
 
-    // Count how many times this associate name has been used
-    const nameCount = breakRecords.filter(record => record.name === associateName).length;
+    // Check if this associate name has already been used
+    const existingNameRecord = breakRecords.find(record => record.name === associateName);
     
-    // Check if this would be the third entry for this name
-    if (nameCount >= 2) {
-      toast.error(`${associateName} has already been used twice. Cannot add a third entry.`);
+    if (existingNameRecord) {
+      toast.error(`${associateName} has already been used. Please enter a different name.`);
       setAssociateName('');
       return;
     }
 
     const now = new Date();
-    const existingRecord = breakRecords.find(record => record.name === associateName && !record.end);
+    const activeRecord = breakRecords.find(record => record.name === associateName && !record.end);
 
-    if (existingRecord) {
+    if (activeRecord) {
       // End break - use the stored startTime Date object for calculation
-      const startTime = existingRecord.startTime || new Date();
+      const startTime = activeRecord.startTime || new Date();
       const duration = formatDuration(now.getTime() - startTime.getTime());
       
       setBreakRecords(prev => 

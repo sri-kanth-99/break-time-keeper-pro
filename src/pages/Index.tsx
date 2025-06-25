@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Clock, Download, Copy, Trash2, Users, Timer } from 'lucide-react';
+import { Download, Copy, Trash2, Users, Timer } from 'lucide-react';
 import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 
@@ -24,18 +24,9 @@ interface ActiveBreak {
 }
 
 const Index = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
   const [associateName, setAssociateName] = useState('');
   const [breakRecords, setBreakRecords] = useState<BreakRecord[]>([]);
   const [activeBreaks, setActiveBreaks] = useState<{ [key: string]: ActiveBreak }>({});
-
-  // Update clock every second
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -191,21 +182,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-slate-50 p-4">
-      {/* Live Clock */}
-      <div className="fixed top-4 left-4 z-10">
-        <Card className="bg-slate-900 text-green-400 border-slate-700 shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-6 w-6" />
-              <span className="font-mono text-xl font-bold">
-                {currentTime.toLocaleTimeString()}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="max-w-7xl mx-auto pt-20">
+      <div className="max-w-7xl mx-auto pt-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-slate-800 mb-2 flex items-center justify-center gap-3">

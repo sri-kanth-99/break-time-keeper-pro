@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,7 +33,13 @@ const Index = () => {
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        setBreakRecords(parsed);
+        // Reconstruct Date objects from saved strings
+        const reconstructedData = parsed.map((record: any) => ({
+          ...record,
+          startTime: record.startTime ? new Date(record.startTime) : undefined,
+          endTime: record.endTime ? new Date(record.endTime) : undefined,
+        }));
+        setBreakRecords(reconstructedData);
       } catch (error) {
         console.error('Error loading saved data:', error);
       }
@@ -83,8 +88,11 @@ const Index = () => {
     const activeRecord = breakRecords.find(record => record.name === associateName && !record.end);
 
     if (activeRecord) {
-      // End break - use the stored startTime Date object for calculation
-      const startTime = activeRecord.startTime || new Date();
+      // End break - ensure startTime is a proper Date object
+      const startTime = activeRecord.startTime && activeRecord.startTime instanceof Date 
+        ? activeRecord.startTime 
+        : new Date(activeRecord.start);
+      
       const duration = formatDuration(now.getTime() - startTime.getTime());
       
       setBreakRecords(prev => 

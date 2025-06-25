@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -77,11 +78,12 @@ const Index = () => {
       return;
     }
 
-    // Check if this associate name has already been used
-    const existingNameRecord = breakRecords.find(record => record.name === associateName);
+    // Count how many times this associate name has been used
+    const nameCount = breakRecords.filter(record => record.name === associateName).length;
     
-    if (existingNameRecord) {
-      toast.error(`${associateName} has already been used. Please enter a different name.`);
+    // Check if this would be more than 2 entries for this name
+    if (nameCount >= 2) {
+      toast.error(`${associateName} has already been used twice. Cannot add more entries.`);
       setAssociateName('');
       return;
     }
